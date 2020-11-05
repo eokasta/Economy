@@ -1,0 +1,7 @@
+mysql:
+  host: "localhost"
+  database: "minecraft_plugins"
+  user: "root"
+  password: ""
+  port: 3306
+  table: "economy"
