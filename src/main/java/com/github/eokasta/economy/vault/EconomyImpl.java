@@ -1,32 +1,18 @@
 package com.github.eokasta.economy.vault;
 
-import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.entities.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.utils.Helper;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.ServicePriority;
 
 import java.util.List;
 import java.util.Optional;
 
 public class EconomyImpl implements Economy {
 
-    private final EconomyManager economyManager;
-
-    public EconomyImpl(EconomyPlugin plugin) {
-        this.economyManager = plugin.getEconomyManager();
-
-        Bukkit.getServer().getServicesManager().register(
-                Economy.class,
-                this,
-                plugin,
-                ServicePriority.Highest
-        );
-    }
+    private final EconomyManager economyManager = EconomyManager.getInstance();
 
     @Override
     public boolean isEnabled() {

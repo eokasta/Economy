@@ -8,11 +8,20 @@ import com.github.eokasta.economy.storage.StorageManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class EconomyManager {
+
+    private static EconomyManager instance;
+    public static EconomyManager getInstance() {
+        if (instance == null)
+            instance = new EconomyManager(JavaPlugin.getPlugin(EconomyPlugin.class));
+
+        return instance;
+    }
 
     @Getter
     private final EconomyPlugin plugin;
@@ -26,6 +35,7 @@ public class EconomyManager {
     @SneakyThrows
     public Optional<Account> getAccount(String name) {
         final Optional<Account> optionalAccountCache = cacheDao.get(name);
+
         return optionalAccountCache.isPresent()
                 ? optionalAccountCache
                 : CompletableFuture.supplyAsync(() -> accountDao.get(name)).get();
@@ -39,7 +49,7 @@ public class EconomyManager {
         this.accountDao = new AccountDao(storageManager);
         this.cacheDao = new CacheDao();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 20, 20 * 60);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 20, 20 * plugin.getSettings().getSaveTaskDelay());
     }
 
     public void saveAll() {
@@ -53,7 +63,7 @@ public class EconomyManager {
             accountDao.save(account);
             account.setModified(false);
 
-            if (!Bukkit.getPlayerExact(account.getName()).isOnline())
+            if (Bukkit.getPlayerExact(account.getName()) == null)
                 cacheDao.delete(account);
         });
 

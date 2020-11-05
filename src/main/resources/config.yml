@@ -5,3 +5,6 @@ mysql:
   password: ""
   port: 3306
   table: "economy"
+
+# In seconds
+save-task-delay: 30
