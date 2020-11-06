@@ -21,6 +21,10 @@ public class Account {
         setCoins(Math.max(0, this.coins - coins));
     }
 
+    public boolean hasCoins(double coins) {
+        return this.coins >= coins;
+    }
+
     public void setCoins(double coins) {
         this.coins = coins;
         modified = true;

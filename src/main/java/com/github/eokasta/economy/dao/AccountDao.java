@@ -96,6 +96,31 @@ public class AccountDao implements Dao<String, Account> {
         return accounts;
     }
 
+    public Account[] getAllOrder(int limit) {
+        final Account[] accounts = new Account[limit];
+
+        try (
+                final Connection connection = databaseProvider.getConnection();
+                final PreparedStatement statement = connection.prepareStatement(
+                        "SELECT * FROM " + databaseProvider.getTable() + " WHERE coins > 0 ORDER BY coins DESC LIMIT " + limit);
+                final ResultSet resultSet = statement.executeQuery()
+        ) {
+            int i = 0;
+            while (resultSet.next()) {
+                final Account account = Account.builder()
+                        .name(resultSet.getString("name"))
+                        .id(resultSet.getInt("id"))
+                        .coins(resultSet.getDouble("coins"))
+                        .build();
+                accounts[i++] = account;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return accounts;
+    }
+
     @Override
     public void save(Account account) {
         if (!has(account.getName())) {
@@ -145,9 +170,10 @@ public class AccountDao implements Dao<String, Account> {
     private void update(Account account) {
         try (
                 final Connection connection = databaseProvider.getConnection();
-                final PreparedStatement statement = connection.prepareStatement("UPDATE " + databaseProvider.getTable() + " SET coins = ?")
+                final PreparedStatement statement = connection.prepareStatement("UPDATE " + databaseProvider.getTable() + " SET coins = ? WHERE name = ?")
         ) {
             statement.setDouble(1, account.getCoins());
+            statement.setString(2, account.getName());
 
             statement.execute();
         } catch (SQLException e) {
