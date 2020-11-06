@@ -70,6 +70,9 @@ public class EconomyManager {
     }
 
     public void showTop(Player player) {
+        if (topAccounts == null)
+            return;
+
         final PaginatedGUIBuilder guiBuilder = new PaginatedGUIBuilder("TOP - Coins", "xxxxxxxxx" + "xx#####xx");
         guiBuilder.setDefaultAllCancell(true);
 

@@ -8,3 +8,50 @@ mysql:
 
 # In seconds
 save-task-delay: 30
+
+messages:
+  no-permission:
+    - '&cYou don''t have permission.'
+  help-message:
+    - ' '
+    - ' &f/money &7- &aView your coins.'
+    - ' &f/money <player> &7- &aSee another player coins.'
+    - ' &f/money pay <player> <coins> &7- &aPay a player.'
+    - ' &f/money top &7- &aSee the TOP coins.'
+    - ' '
+    - ' &f/money set <player> <coins> &7- &cSet a player''s coins.'
+    - ' &f/money give <player> <coins> &7- &cGive coins to another player.'
+    - ' &f/money remove <player> <coins> &7- &cRemove coins from a player.'
+    - ' '
+  set-subcommand-usage:
+    - ' &f/money set <player> <coins> &7- &cSet a player''s coins.'
+  give-subcommand-usage:
+    - ' &f/money give <player> <coins> &7- &cGive coins to another player.'
+  remove-subcommand-usage:
+    - ' &f/money remove <player> <coins> &7- &cRemove coins from a player.'
+  pay-subcommand-usage:
+    - ' &f/money pay <player> <coins> &7- &aPay a player.'
+  no-have-account:
+    - '&cYou don''t have account.'
+  your-coins:
+    - '&aYou have: &f%coins%&a coins.'
+  player-no-have-account:
+    - '&cThis player doesn''t have an account.'
+  player-coins:
+    - '&a%player% have: &f%coins%&a coins.'
+  amount-must-be-number:
+    - '&cAmount must be a number.'
+  give-coins:
+    - '&a%player%''s coins have been set to %coins%. &7(+%coinsAdded%)'
+  cannot-give-yourself:
+    - '&cYou cannot give yourself coins.'
+  no-have-coins:
+    - '&cYou do not have coins.'
+  pay-player:
+    - '&aYou have sent &f%coins%&a coins to &f%target%&a.'
+  received-coins-player:
+    - '&aYou have received &f%coins%&a coins from &f%player%&a.'
+  removed-coins:
+    - '&a%player%''s coins have been set to %coins%. &7(-%coinsRemoved%)'
+  set-coins:
+    - '&a%player%''s coins have been set to %coins%.'

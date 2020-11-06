@@ -7,7 +7,9 @@ import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.entities.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.utils.Helper;
+import com.github.eokasta.economy.utils.Replacer;
 import com.github.eokasta.economy.utils.Verifications;
+import com.github.eokasta.economy.utils.provider.Settings;
 import org.bukkit.command.CommandSender;
 
 import java.util.Optional;
@@ -19,10 +21,15 @@ import java.util.Optional;
 public class SetSubCommand extends SubCommand {
 
     private final EconomyManager economyManager;
+    private final Settings settings;
 
     public SetSubCommand(EconomyPlugin plugin) {
         this.economyManager = plugin.getEconomyManager();
-        setUsage("&c/money set <player> <amount>");
+        this.settings = plugin.getSettings();
+
+        setUsage(String.join("\n", settings.formatOf("set-subcommand-usage")));
+
+        setNoPermissionMessage(String.join("\n", settings.formatOf("no-permission")));
     }
 
     @Override
@@ -33,19 +40,24 @@ public class SetSubCommand extends SubCommand {
         final String player = args[0];
         Double amount = Verifications.getDouble(args[1]);
         if (amount == null)
-            throw new CommandLibException("&cAmount must be a number.");
+            throw new CommandLibException(String.join("\n", settings.formatOf("amount-must-be-number")));
 
         if (amount < 0)
             amount = amount * -1;
 
         final Optional<Account> optionalAccount = economyManager.getAccount(player);
         if (!optionalAccount.isPresent())
-            throw new CommandLibException("&cThis player doesn't have an account.");
+            throw new CommandLibException(String.join("\n", settings.formatOf("player-no-have-account")));
 
         final Account account = optionalAccount.get();
         account.setCoins(amount);
 
-        message("&a" + account.getName() + "'s coins have been set to " + Helper.formatBalance(account.getCoins()) + ".");
+        message(String.join("\n", settings.replaceOf("set-coins",
+                new Replacer()
+                        .add("%player%", account.getName())
+                        .add("%coins%", Helper.formatBalance(account.getCoins()))))
+        );
+
     }
 
 }
