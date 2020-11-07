@@ -2,8 +2,8 @@ package com.github.eokasta.economy.manager;
 
 import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.dao.AccountDao;
-import com.github.eokasta.economy.dao.CacheDao;
-import com.github.eokasta.economy.entities.Account;
+import com.github.eokasta.economy.cache.AccountCache;
+import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.storage.StorageManager;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.MakeItem;
@@ -36,7 +36,7 @@ public class EconomyManager {
     @Getter
     private final AccountDao accountDao;
     @Getter
-    private final CacheDao cacheDao;
+    private final AccountCache accountCache;
 
     @Getter
     private Account[] topAccounts;
@@ -47,7 +47,7 @@ public class EconomyManager {
 
         this.storageManager = new StorageManager(plugin.getSettings().getSQLSettings());
         this.accountDao = new AccountDao(storageManager);
-        this.cacheDao = new CacheDao();
+        this.accountCache = new AccountCache();
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             saveAll();
@@ -58,7 +58,7 @@ public class EconomyManager {
 
     @SneakyThrows
     public Optional<Account> getAccount(String name) {
-        final Optional<Account> optionalAccountCache = cacheDao.get(name);
+        final Optional<Account> optionalAccountCache = accountCache.get(name);
 
         return optionalAccountCache.isPresent()
                 ? optionalAccountCache
@@ -100,7 +100,7 @@ public class EconomyManager {
         plugin.getLogger().info("Saving accounts...");
         final long before = System.currentTimeMillis();
 
-        cacheDao.getAll().forEach(account -> {
+        accountCache.getAll().forEach(account -> {
             if (!account.isModified())
                 return;
 
@@ -108,7 +108,7 @@ public class EconomyManager {
             account.setModified(false);
 
             if (Bukkit.getPlayerExact(account.getName()) == null)
-                cacheDao.delete(account);
+                accountCache.delete(account);
         });
 
         plugin.getLogger().info("Accounts saved in " + (System.currentTimeMillis() - before) + "ms.");

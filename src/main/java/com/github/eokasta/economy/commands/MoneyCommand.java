@@ -6,7 +6,7 @@ import com.github.eokasta.commandlib.exceptions.CommandLibException;
 import com.github.eokasta.commandlib.providers.Command;
 import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.commands.subcommands.*;
-import com.github.eokasta.economy.entities.Account;
+import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.Replacer;

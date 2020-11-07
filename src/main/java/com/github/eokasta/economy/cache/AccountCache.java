@@ -1,14 +1,14 @@
-package com.github.eokasta.economy.dao;
+package com.github.eokasta.economy.cache;
 
 import com.github.eokasta.economy.dao.provider.Dao;
-import com.github.eokasta.economy.entities.Account;
+import com.github.eokasta.economy.models.Account;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CacheDao implements Dao<String, Account> {
+public class AccountCache implements Dao<String, Account> {
 
     private final ConcurrentHashMap<String, Account> accounts = new ConcurrentHashMap<>();
 

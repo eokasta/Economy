@@ -1,4 +1,4 @@
-package com.github.eokasta.economy.entities;
+package com.github.eokasta.economy.models;
 
 import com.github.eokasta.economy.manager.EconomyManager;
 import lombok.Builder;
@@ -28,6 +28,6 @@ public class Account {
     public void setCoins(double coins) {
         this.coins = coins;
         modified = true;
-        EconomyManager.getInstance().getCacheDao().save(this);
+        EconomyManager.getInstance().getAccountCache().save(this);
     }
 }

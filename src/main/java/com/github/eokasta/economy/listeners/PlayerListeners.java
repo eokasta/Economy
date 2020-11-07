@@ -2,8 +2,8 @@ package com.github.eokasta.economy.listeners;
 
 import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.dao.AccountDao;
-import com.github.eokasta.economy.dao.CacheDao;
-import com.github.eokasta.economy.entities.Account;
+import com.github.eokasta.economy.cache.AccountCache;
+import com.github.eokasta.economy.models.Account;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,11 +16,11 @@ import java.util.concurrent.CompletableFuture;
 public class PlayerListeners implements Listener {
 
     private final AccountDao accountDao;
-    private final CacheDao cacheDao;
+    private final AccountCache accountCache;
 
     public PlayerListeners(EconomyPlugin plugin) {
         this.accountDao = plugin.getEconomyManager().getAccountDao();
-        this.cacheDao = plugin.getEconomyManager().getCacheDao();
+        this.accountCache = plugin.getEconomyManager().getAccountCache();
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -33,11 +33,11 @@ public class PlayerListeners implements Listener {
             final Optional<Account> account = accountDao.get(player.getName());
 
             if (account.isPresent())
-                cacheDao.save(account.get());
+                accountCache.save(account.get());
 
             else {
                 final Account account1 = Account.builder().name(player.getName()).build();
-                cacheDao.save(account1);
+                accountCache.save(account1);
                 accountDao.save(account1);
             }
         });
@@ -47,9 +47,9 @@ public class PlayerListeners implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        CompletableFuture.runAsync(() -> cacheDao.get(player.getName()).ifPresent(account -> {
+        CompletableFuture.runAsync(() -> accountCache.get(player.getName()).ifPresent(account -> {
             accountDao.save(account);
-            cacheDao.delete(account);
+            accountCache.delete(account);
         }));
     }
 

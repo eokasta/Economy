@@ -1,6 +1,6 @@
 package com.github.eokasta.economy.vault;
 
-import com.github.eokasta.economy.entities.Account;
+import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.utils.Helper;
 import net.milkbowl.vault.economy.Economy;
@@ -118,7 +118,7 @@ public class EconomyImpl implements Economy {
 
         final Account account = optionalAccount.get();
         account.removeCoins(v);
-        economyManager.getCacheDao().save(optionalAccount.get());
+        economyManager.getAccountCache().save(optionalAccount.get());
 
         return new EconomyResponse(v, getBalance(s), EconomyResponse.ResponseType.SUCCESS, "");
     }
@@ -146,7 +146,7 @@ public class EconomyImpl implements Economy {
 
         final Account account = optionalAccount.get();
         account.addCoins(v);
-        economyManager.getCacheDao().save(optionalAccount.get());
+        economyManager.getAccountCache().save(optionalAccount.get());
 
         return new EconomyResponse(v, getBalance(s), EconomyResponse.ResponseType.SUCCESS, "");
     }

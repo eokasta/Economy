@@ -1,7 +1,7 @@
 package com.github.eokasta.economy.dao;
 
 import com.github.eokasta.economy.dao.provider.Dao;
-import com.github.eokasta.economy.entities.Account;
+import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.storage.provider.DatabaseProvider;
 import lombok.RequiredArgsConstructor;
 
