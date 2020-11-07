@@ -9,6 +9,23 @@ mysql:
 # In seconds
 save-task-delay: 30
 
+top-menu:
+  limit: 5
+  name: "TOP - Coins"
+  # don't put the last line!
+  # x = board
+  # # = content
+  # < & > = previous and next
+  shape:
+    - 'xxxxxxxxx'
+    - 'xx#####xx'
+  item:
+    name: "#%position% %player%"
+    lore:
+      - ' '
+      - ' &7Posição: &f#%position%'
+      - ' &7Coins: &f%coins%'
+      - ' '
 messages:
   no-permission:
     - '&cYou don''t have permission.'

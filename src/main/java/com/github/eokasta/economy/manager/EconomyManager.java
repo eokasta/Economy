@@ -1,18 +1,21 @@
 package com.github.eokasta.economy.manager;
 
 import com.github.eokasta.economy.EconomyPlugin;
-import com.github.eokasta.economy.dao.AccountDao;
 import com.github.eokasta.economy.cache.AccountCache;
+import com.github.eokasta.economy.dao.AccountDao;
 import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.storage.StorageManager;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.MakeItem;
+import com.github.eokasta.economy.utils.Replacer;
 import dev.arantes.inventorymenulib.PaginatedGUIBuilder;
 import dev.arantes.inventorymenulib.buttons.ItemButton;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 public class EconomyManager {
 
     private static EconomyManager instance;
+
     public static EconomyManager getInstance() {
         if (instance == null)
             instance = new EconomyManager(JavaPlugin.getPlugin(EconomyPlugin.class));
@@ -66,14 +70,19 @@ public class EconomyManager {
     }
 
     public void updateTop() {
-        this.topAccounts = accountDao.getAllOrder(5);
+        this.topAccounts = accountDao.getAllOrder(plugin.getSettings().getTopSettings().getInt("limit", 5));
     }
 
     public void showTop(Player player) {
         if (topAccounts == null)
             return;
 
-        final PaginatedGUIBuilder guiBuilder = new PaginatedGUIBuilder("TOP - Coins", "xxxxxxxxx" + "xx#####xx");
+        final ConfigurationSection section = plugin.getSettings().getTopSettings();
+        if (section == null)
+            return;
+
+        final PaginatedGUIBuilder guiBuilder = new PaginatedGUIBuilder(Helper.format(section.getString("name")),
+                String.join("", section.getStringList("shape")));
         guiBuilder.setDefaultAllCancell(true);
 
         final ArrayList<ItemButton> content = new ArrayList<>();
@@ -81,19 +90,28 @@ public class EconomyManager {
         int position = 0;
         while (topAccounts[position] != null) {
             final Account account = topAccounts[position++];
-            content.add(new ItemButton(new MakeItem(account.getName())
-                    .setName("&a#" + (position) + " " + account.getName())
-                    .addLoreList("",
-                            " &7Posição: &f#" + position,
-                            " &7Coins: &f" + Helper.formatBalance(account.getCoins()),
-                            "")
-                    .build())
-            );
+            content.add(new ItemButton(buildItem(position, account)));
         }
 
         guiBuilder.setContent(content);
 
         guiBuilder.build().show(player);
+    }
+
+    private ItemStack buildItem(int position, Account account) {
+        final Replacer replacer = new Replacer();
+        replacer.add("%position%", position);
+        replacer.add("%player%", account.getName());
+        replacer.add("%coins%", Helper.formatBalance(account.getCoins()));
+
+        final ConfigurationSection settings = plugin.getSettings().getTopSettings().getConfigurationSection("item");
+
+        final MakeItem makeItem = new MakeItem(account.getName());
+        makeItem.setName(replacer.replace(settings.getString("name")));
+        for (String line : settings.getStringList("lore"))
+            makeItem.addLore(replacer.replace(line));
+
+        return makeItem.build();
     }
 
     public void saveAll() {

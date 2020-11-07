@@ -22,6 +22,10 @@ public class Settings {
         return file.getConfig().getInt("save-task-delay", 30);
     }
 
+    public ConfigurationSection getTopSettings() {
+        return file.getConfig().getConfigurationSection("top-menu");
+    }
+
     public List<String> messageOf(String path) {
         return file.getConfig().getStringList("messages." + path);
     }
