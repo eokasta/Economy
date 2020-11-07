@@ -55,7 +55,7 @@ public class EconomyManager {
         this.accountDao = new AccountDao(storageManager);
         this.accountCache = new AccountCache();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 20, 20 * plugin.getSettings().getSaveTaskDelay());
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 10, 20 * plugin.getSettings().getSaveTaskDelay());
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updateTop, 20, 20 * plugin.getSettings().getUpdateTopTaskDelay());
     }
 
@@ -72,6 +72,7 @@ public class EconomyManager {
         this.topAccounts = accountDao.getAllOrder(plugin.getSettings().getTopSettings().getInt("limit", 5));
 
         final Account topAccount = topAccounts[0];
+
         if (topAccount != null && (lastTop == null || !topAccount.getName().equals(lastTop.getName()))) {
             plugin.getSettings().replaceOf(
                     "top-money-announcement",

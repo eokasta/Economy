@@ -7,6 +7,7 @@ import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.utils.YamlConfig;
 import com.github.eokasta.economy.utils.provider.Settings;
 import com.github.eokasta.economy.vault.EconomyImpl;
+import dev.arantes.inventorymenulib.listeners.InventoryListener;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -24,6 +25,8 @@ public class EconomyPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        InventoryListener.register(this);
+
         this.settings = new Settings(new YamlConfig("config.yml", this, true));
         this.economyManager = EconomyManager.getInstance();
 

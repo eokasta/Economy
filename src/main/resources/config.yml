@@ -24,7 +24,7 @@ top-menu:
     name: "#%position% %player%"
     lore:
       - ' '
-      - ' &7Posição: &f#%position%'
+      - ' &7Position: &f#%position%'
       - ' &7Coins: &f%coins%'
       - ' '
 messages:
