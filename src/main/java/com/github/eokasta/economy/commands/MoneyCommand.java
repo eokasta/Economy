@@ -37,8 +37,6 @@ public class MoneyCommand extends Command {
         registerSubCommand(new PaySubCommand(plugin));
         registerSubCommand(new TopSubCommand(plugin.getEconomyManager()));
         registerSubCommand(new HelpSubCommand(plugin.getSettings()));
-
-        CommandManager.registerCommand(plugin, this);
     }
 
     @Override

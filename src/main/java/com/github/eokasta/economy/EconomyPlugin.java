@@ -1,5 +1,6 @@
 package com.github.eokasta.economy;
 
+import com.github.eokasta.commandlib.CommandManager;
 import com.github.eokasta.economy.commands.MoneyCommand;
 import com.github.eokasta.economy.listeners.PlayerListeners;
 import com.github.eokasta.economy.manager.EconomyManager;
@@ -34,7 +35,9 @@ public class EconomyPlugin extends JavaPlugin {
         );
 
         new PlayerListeners(this);
-        new MoneyCommand(this);
+
+        final CommandManager commandManager = new CommandManager(this);
+        commandManager.registerCommand(new MoneyCommand(this));
     }
 
     @Override
