@@ -44,6 +44,8 @@ public class EconomyManager {
 
     @Getter
     private Account[] topAccounts;
+    @Getter
+    private Account lastTop;
 
     @SneakyThrows
     public EconomyManager(EconomyPlugin plugin) {
@@ -53,11 +55,8 @@ public class EconomyManager {
         this.accountDao = new AccountDao(storageManager);
         this.accountCache = new AccountCache();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-            saveAll();
-            updateTop();
-        }, 20, 20 * plugin.getSettings().getSaveTaskDelay());
-
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 20, 20 * plugin.getSettings().getSaveTaskDelay());
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updateTop, 20, 20 * plugin.getSettings().getUpdateTopTaskDelay());
     }
 
     @SneakyThrows
@@ -71,6 +70,18 @@ public class EconomyManager {
 
     public void updateTop() {
         this.topAccounts = accountDao.getAllOrder(plugin.getSettings().getTopSettings().getInt("limit", 5));
+
+        final Account topAccount = topAccounts[0];
+        if (topAccount != null && (lastTop == null || !topAccount.getName().equals(lastTop.getName()))) {
+            plugin.getSettings().replaceOf(
+                    "top-money-announcement",
+                    new Replacer()
+                            .add("%player%", topAccount.getName())
+                            .add("%coins%", Helper.formatBalance(topAccount.getCoins()))
+            ).forEach(Bukkit::broadcastMessage);
+
+            this.lastTop = topAccount;
+        }
     }
 
     public void showTop(Player player) {

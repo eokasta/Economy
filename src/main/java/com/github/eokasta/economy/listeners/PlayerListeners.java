@@ -38,7 +38,6 @@ public class PlayerListeners implements Listener {
             else {
                 final Account account1 = Account.builder().name(player.getName()).build();
                 accountCache.save(account1);
-                accountDao.save(account1);
             }
         });
     }

@@ -8,6 +8,7 @@ mysql:
 
 # In seconds
 save-task-delay: 30
+update-top-task-delay: 300
 
 top-menu:
   limit: 5
@@ -72,3 +73,8 @@ messages:
     - '&a%player%''s coins have been set to %coins%. &7(-%coinsRemoved%)'
   set-coins:
     - '&a%player%''s coins have been set to %coins%.'
+  top-money-announcement:
+    - ' '
+    - ' &a&lNEW TOP MONEY!'
+    - ' &f%player% &ais the new Tycoon with &f%coins%&a coins.'
+    - ' '
