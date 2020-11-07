@@ -54,8 +54,8 @@ public class RemoveSubCommand extends SubCommand {
         message(String.join("\n", settings.replaceOf("removed-coins",
                 new Replacer()
                         .add("%player%", account.getName())
-                        .add("%coins%", Helper.formatBalance(account.getCoins()))
-                        .add("%coinsRemoved%", Helper.formatBalance(amount))))
+                        .add("%coins%", economyManager.getNumberFormatter().format(account.getCoins()))
+                        .add("%coinsRemoved%", economyManager.getNumberFormatter().format(amount))))
         );
     }
 }

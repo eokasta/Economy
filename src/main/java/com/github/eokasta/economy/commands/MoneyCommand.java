@@ -1,14 +1,12 @@
 package com.github.eokasta.economy.commands;
 
-import com.github.eokasta.commandlib.CommandManager;
 import com.github.eokasta.commandlib.annotations.CommandInformation;
 import com.github.eokasta.commandlib.exceptions.CommandLibException;
 import com.github.eokasta.commandlib.providers.Command;
 import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.commands.subcommands.*;
-import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
-import com.github.eokasta.economy.utils.Helper;
+import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.utils.Replacer;
 import com.github.eokasta.economy.utils.provider.Settings;
 import org.bukkit.command.CommandSender;
@@ -37,6 +35,7 @@ public class MoneyCommand extends Command {
         registerSubCommand(new PaySubCommand(plugin));
         registerSubCommand(new TopSubCommand(plugin.getEconomyManager()));
         registerSubCommand(new HelpSubCommand(plugin.getSettings()));
+        registerSubCommand(new ReloadSubCommand(plugin));
     }
 
     @Override
@@ -53,7 +52,7 @@ public class MoneyCommand extends Command {
             final Account account = optionalAccount.get();
             message(String.join("\n",
                     settings.replaceOf("your-coins",
-                            new Replacer().add("%coins%", Helper.formatBalance(account.getCoins()))))
+                            new Replacer().add("%coins%", economyManager.getNumberFormatter().format(account.getCoins()))))
             );
             return;
         }
@@ -67,7 +66,7 @@ public class MoneyCommand extends Command {
         message(String.join("\n", settings.replaceOf("player-coins",
                 new Replacer()
                         .add("%player%", account.getName())
-                        .add("%coins%", Helper.formatBalance(account.getCoins()))))
+                        .add("%coins%", economyManager.getNumberFormatter().format(account.getCoins()))))
         );
     }
 }

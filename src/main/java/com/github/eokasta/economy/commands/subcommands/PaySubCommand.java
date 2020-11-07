@@ -72,7 +72,7 @@ public class PaySubCommand extends SubCommand {
 
         message(String.join("\n", settings.replaceOf("pay-player",
                 new Replacer()
-                        .add("%coins%", Helper.formatBalance(amount))
+                        .add("%coins%", economyManager.getNumberFormatter().format(amount))
                         .add("%target%", Helper.format(targetAccount.getName()))))
         );
 
@@ -80,7 +80,7 @@ public class PaySubCommand extends SubCommand {
         if (targetPlayer != null)
             targetPlayer.sendMessage(String.join("\n", settings.replaceOf("received-coins-player",
                     new Replacer()
-                            .add("%coins%", Helper.formatBalance(amount))
+                            .add("%coins%", economyManager.getNumberFormatter().format(amount))
                             .add("%player%", player.getName())))
             );
     }

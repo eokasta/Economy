@@ -55,7 +55,7 @@ public class SetSubCommand extends SubCommand {
         message(String.join("\n", settings.replaceOf("set-coins",
                 new Replacer()
                         .add("%player%", account.getName())
-                        .add("%coins%", Helper.formatBalance(account.getCoins()))))
+                        .add("%coins%", economyManager.getNumberFormatter().format(account.getCoins()))))
         );
 
     }

@@ -8,15 +8,18 @@ import com.github.eokasta.economy.storage.StorageManager;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.MakeItem;
 import com.github.eokasta.economy.utils.Replacer;
+import com.github.eokasta.economy.utils.provider.NumberFormatter;
 import dev.arantes.inventorymenulib.PaginatedGUIBuilder;
 import dev.arantes.inventorymenulib.buttons.ItemButton;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -43,9 +46,17 @@ public class EconomyManager {
     private final AccountCache accountCache;
 
     @Getter
+    private final NumberFormatter numberFormatter;
+
+    @Getter
     private Account[] topAccounts;
     @Getter
     private Account lastTop;
+
+    @Getter
+    private BukkitTask saveAllTask;
+    @Getter
+    private BukkitTask updateTopTask;
 
     @SneakyThrows
     public EconomyManager(EconomyPlugin plugin) {
@@ -55,8 +66,20 @@ public class EconomyManager {
         this.accountDao = new AccountDao(storageManager);
         this.accountCache = new AccountCache();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 10, 20 * plugin.getSettings().getSaveTaskDelay());
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updateTop, 20, 20 * plugin.getSettings().getUpdateTopTaskDelay());
+        this.numberFormatter = new NumberFormatter(plugin.getSettings());
+
+        initTasks();
+    }
+
+    public void initTasks() {
+        if (saveAllTask != null)
+            saveAllTask.cancel();
+
+        if (updateTopTask != null)
+            updateTopTask.cancel();
+
+        this.saveAllTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 10, 20 * plugin.getSettings().getSaveTaskDelay());
+        this.updateTopTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updateTop, 20, 20 * plugin.getSettings().getUpdateTopTaskDelay());
     }
 
     @SneakyThrows
@@ -78,7 +101,7 @@ public class EconomyManager {
                     "top-money-announcement",
                     new Replacer()
                             .add("%player%", topAccount.getName())
-                            .add("%coins%", Helper.formatBalance(topAccount.getCoins()))
+                            .add("%coins%", numberFormatter.format(topAccount.getCoins()))
             ).forEach(Bukkit::broadcastMessage);
 
             this.lastTop = topAccount;
@@ -114,7 +137,7 @@ public class EconomyManager {
         final Replacer replacer = new Replacer();
         replacer.add("%position%", position);
         replacer.add("%player%", account.getName());
-        replacer.add("%coins%", Helper.formatBalance(account.getCoins()));
+        replacer.add("%coins%", numberFormatter.format(account.getCoins()));
 
         final ConfigurationSection settings = plugin.getSettings().getTopSettings().getConfigurationSection("item");
 

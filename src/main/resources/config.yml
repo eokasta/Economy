@@ -10,6 +10,34 @@ mysql:
 save-task-delay: 30
 update-top-task-delay: 300
 
+number-format-chars:
+  - ''
+  - 'K'
+  - 'M'
+  - 'B'
+  - 'T'
+  - 'Q'
+  - 'QQ'
+  - 'S'
+  - 'SS'
+  - 'O'
+  - 'N'
+  - 'D'
+  - 'UN'
+  - 'DD'
+  - 'TR'
+  - 'QT'
+  - 'QN'
+  - 'SD'
+  - 'SPD'
+  - 'OD'
+  - 'ND'
+  - 'VG'
+  - 'UVG'
+  - 'DVG'
+  - 'TVG'
+  - 'QTV'
+
 top-menu:
   limit: 5
   name: "TOP - Coins"
@@ -78,3 +106,5 @@ messages:
     - ' &a&lNEW TOP MONEY!'
     - ' &f%player% &ais the new Tycoon with &f%coins%&a coins.'
     - ' '
+  reloaded-messages:
+    - '&aEconomy reload complete.'

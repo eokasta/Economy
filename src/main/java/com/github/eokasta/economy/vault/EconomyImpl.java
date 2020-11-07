@@ -36,7 +36,7 @@ public class EconomyImpl implements Economy {
 
     @Override
     public String format(double v) {
-        return Helper.formatBalance(v);
+        return economyManager.getNumberFormatter().format(v);
     }
 
     @Override

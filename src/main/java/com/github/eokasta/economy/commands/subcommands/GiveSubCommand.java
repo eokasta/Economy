@@ -54,8 +54,8 @@ public class GiveSubCommand extends SubCommand {
         message(String.join("\n", settings.replaceOf("give-coins",
                 new Replacer()
                         .add("%player%", account.getName())
-                        .add("%coins%", Helper.formatBalance(account.getCoins()))
-                        .add("%coinsAdded%", Helper.formatBalance(amount))))
+                        .add("%coins%", economyManager.getNumberFormatter().format(account.getCoins()))
+                        .add("%coinsAdded%", economyManager.getNumberFormatter().format(amount))))
         );
 
     }

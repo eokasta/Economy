@@ -30,6 +30,10 @@ public class Settings {
         return file.getConfig().getConfigurationSection("top-menu");
     }
 
+    public List<String> getNumberFormatChars() {
+        return file.getConfig().getStringList("number-format-chars");
+    }
+
     public List<String> messageOf(String path) {
         return file.getConfig().getStringList("messages." + path);
     }
