@@ -4,6 +4,8 @@ import com.github.eokasta.commandlib.annotations.SubCommandInformation;
 import com.github.eokasta.commandlib.enums.CommandTarget;
 import com.github.eokasta.commandlib.providers.SubCommand;
 import com.github.eokasta.economy.manager.EconomyManager;
+import com.github.eokasta.economy.singleton.SingletonMapper;
+import com.github.eokasta.economy.utils.provider.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,11 +16,12 @@ import org.bukkit.entity.Player;
 )
 public class TopSubCommand extends SubCommand {
 
-    private final EconomyManager economyManager;
+    private final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
 
-    public TopSubCommand(EconomyManager economyManager) {
-        this.economyManager = economyManager;
-        setNoPermissionMessage(String.join("\n", economyManager.getPlugin().getSettings().formatOf("no-permission")));
+    public TopSubCommand() {
+        final Settings settings = SingletonMapper.of(Settings.class);
+
+        setNoPermissionMessage(String.join("\n", settings.formatOf("no-permission")));
     }
 
     @Override

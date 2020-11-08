@@ -3,10 +3,9 @@ package com.github.eokasta.economy.commands.subcommands;
 import com.github.eokasta.commandlib.annotations.SubCommandInformation;
 import com.github.eokasta.commandlib.exceptions.CommandLibException;
 import com.github.eokasta.commandlib.providers.SubCommand;
-import com.github.eokasta.economy.EconomyPlugin;
-import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
-import com.github.eokasta.economy.utils.Helper;
+import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import com.github.eokasta.economy.utils.Replacer;
 import com.github.eokasta.economy.utils.Verifications;
 import com.github.eokasta.economy.utils.provider.Settings;
@@ -20,13 +19,10 @@ import java.util.Optional;
 )
 public class GiveSubCommand extends SubCommand {
 
-    private final EconomyManager economyManager;
-    private final Settings settings;
+    private final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
+    private final Settings settings = SingletonMapper.of(Settings.class);
 
-    public GiveSubCommand(EconomyPlugin plugin) {
-        this.economyManager = plugin.getEconomyManager();
-        this.settings = plugin.getSettings();
-
+    public GiveSubCommand() {
         setUsage(String.join("\n", settings.formatOf("give-subcommand-usage")));
         setNoPermissionMessage(String.join("\n", settings.formatOf("no-permission")));
     }

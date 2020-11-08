@@ -5,7 +5,6 @@ import com.github.eokasta.economy.commands.MoneyCommand;
 import com.github.eokasta.economy.listeners.PlayerListeners;
 import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.singleton.SingletonMapper;
-import com.github.eokasta.economy.singleton.annotation.Singleton;
 import com.github.eokasta.economy.utils.YamlConfig;
 import com.github.eokasta.economy.utils.provider.Settings;
 import com.github.eokasta.economy.vault.EconomyImpl;
@@ -41,7 +40,7 @@ public class EconomyPlugin extends JavaPlugin {
         new PlayerListeners(this);
 
         final CommandManager commandManager = new CommandManager(this);
-        commandManager.registerCommand(new MoneyCommand(this));
+        commandManager.registerCommand(new MoneyCommand());
     }
 
     @Override

@@ -4,9 +4,9 @@ import com.github.eokasta.commandlib.annotations.SubCommandInformation;
 import com.github.eokasta.commandlib.enums.CommandTarget;
 import com.github.eokasta.commandlib.exceptions.CommandLibException;
 import com.github.eokasta.commandlib.providers.SubCommand;
-import com.github.eokasta.economy.EconomyPlugin;
-import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
+import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.Replacer;
 import com.github.eokasta.economy.utils.Verifications;
@@ -24,13 +24,10 @@ import java.util.Optional;
 )
 public class PaySubCommand extends SubCommand {
 
-    private final EconomyManager economyManager;
-    private final Settings settings;
+    private final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
+    private final Settings settings = SingletonMapper.of(Settings.class);
 
-    public PaySubCommand(EconomyPlugin plugin) {
-        this.economyManager = plugin.getEconomyManager();
-        this.settings = plugin.getSettings();
-
+    public PaySubCommand() {
         setUsage(String.join("\n", settings.formatOf("pay-subcommand-usage")));
         setNoPermissionMessage(String.join("\n", settings.formatOf("no-permission")));
     }

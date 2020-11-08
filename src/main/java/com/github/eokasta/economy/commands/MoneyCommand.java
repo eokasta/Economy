@@ -3,10 +3,10 @@ package com.github.eokasta.economy.commands;
 import com.github.eokasta.commandlib.annotations.CommandInformation;
 import com.github.eokasta.commandlib.exceptions.CommandLibException;
 import com.github.eokasta.commandlib.providers.Command;
-import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.commands.subcommands.*;
 import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import com.github.eokasta.economy.utils.Replacer;
 import com.github.eokasta.economy.utils.provider.Settings;
 import org.bukkit.command.CommandSender;
@@ -20,22 +20,19 @@ import java.util.Optional;
 )
 public class MoneyCommand extends Command {
 
-    private final EconomyManager economyManager;
-    private final Settings settings;
+    private final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
+    private final Settings settings = SingletonMapper.of(Settings.class);
 
-    public MoneyCommand(EconomyPlugin plugin) {
-        this.economyManager = plugin.getEconomyManager();
-        this.settings = plugin.getSettings();
-
+    public MoneyCommand() {
         setNoPermissionMessage(String.join("\n", settings.formatOf("no-permission")));
 
-        registerSubCommand(new SetSubCommand(plugin));
-        registerSubCommand(new GiveSubCommand(plugin));
-        registerSubCommand(new RemoveSubCommand(plugin));
-        registerSubCommand(new PaySubCommand(plugin));
-        registerSubCommand(new TopSubCommand(plugin.getEconomyManager()));
-        registerSubCommand(new HelpSubCommand(plugin.getSettings()));
-        registerSubCommand(new ReloadSubCommand(plugin));
+        registerSubCommand(new SetSubCommand());
+        registerSubCommand(new GiveSubCommand());
+        registerSubCommand(new RemoveSubCommand());
+        registerSubCommand(new PaySubCommand());
+        registerSubCommand(new TopSubCommand());
+        registerSubCommand(new HelpSubCommand());
+        registerSubCommand(new ReloadSubCommand());
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.github.eokasta.economy.commands.subcommands;
 
 import com.github.eokasta.commandlib.annotations.SubCommandInformation;
 import com.github.eokasta.commandlib.providers.SubCommand;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import com.github.eokasta.economy.utils.provider.Settings;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 
 @SubCommandInformation(
@@ -12,11 +12,9 @@ import org.bukkit.command.CommandSender;
 )
 public class HelpSubCommand extends SubCommand {
 
-    private final Settings settings;
+    private final Settings settings = SingletonMapper.of(Settings.class);
 
-    public HelpSubCommand(Settings settings) {
-        this.settings = settings;
-
+    public HelpSubCommand() {
         setNoPermissionMessage(String.join("\n", settings.formatOf("no-permission")));
     }
 
