@@ -1,8 +1,8 @@
 package com.github.eokasta.economy.vault;
 
-import com.github.eokasta.economy.models.Account;
 import com.github.eokasta.economy.manager.EconomyManager;
-import com.github.eokasta.economy.utils.Helper;
+import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class EconomyImpl implements Economy {
 
-    private final EconomyManager economyManager = EconomyManager.getInstance();
+    private final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
 
     @Override
     public boolean isEnabled() {
@@ -118,7 +118,7 @@ public class EconomyImpl implements Economy {
 
         final Account account = optionalAccount.get();
         account.removeCoins(v);
-        economyManager.getAccountCache().save(optionalAccount.get());
+        economyManager.getAccountCache().put(account.getName(), account);
 
         return new EconomyResponse(v, getBalance(s), EconomyResponse.ResponseType.SUCCESS, "");
     }
@@ -146,7 +146,7 @@ public class EconomyImpl implements Economy {
 
         final Account account = optionalAccount.get();
         account.addCoins(v);
-        economyManager.getAccountCache().save(optionalAccount.get());
+        economyManager.getAccountCache().put(account.getName(), account);
 
         return new EconomyResponse(v, getBalance(s), EconomyResponse.ResponseType.SUCCESS, "");
     }

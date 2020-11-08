@@ -1,12 +1,16 @@
 package com.github.eokasta.economy.models;
 
 import com.github.eokasta.economy.manager.EconomyManager;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import lombok.Builder;
 import lombok.Data;
+import lombok.SneakyThrows;
 
 @Data
 @Builder
 public class Account {
+
+    private final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
 
     private int id;
     private final String name;
@@ -25,9 +29,10 @@ public class Account {
         return this.coins >= coins;
     }
 
+    @SneakyThrows
     public void setCoins(double coins) {
         this.coins = coins;
         modified = true;
-        EconomyManager.getInstance().getAccountCache().save(this);
+        economyManager.getAccountCache().put(name, this);
     }
 }

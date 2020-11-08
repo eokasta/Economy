@@ -1,21 +1,15 @@
 package com.github.eokasta.economy.cache;
 
-import com.github.eokasta.economy.dao.provider.Dao;
+import com.github.eokasta.economy.cache.provider.Cache;
 import com.github.eokasta.economy.models.Account;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AccountCache implements Dao<String, Account> {
+public class AccountCache implements Cache<String, Account> {
 
     private final ConcurrentHashMap<String, Account> accounts = new ConcurrentHashMap<>();
-
-    @Override
-    public Optional<Account> get(int id) {
-        return accounts.values().stream().filter(account -> account.getId() == id).findFirst();
-    }
 
     @Override
     public Optional<Account> get(String name) {
@@ -28,18 +22,23 @@ public class AccountCache implements Dao<String, Account> {
     }
 
     @Override
-    public List<Account> getAll() {
-        return new ArrayList<>(accounts.values());
+    public Collection<String> getKeys() {
+        return accounts.keySet();
     }
 
     @Override
-    public void save(Account account) {
-        accounts.put(account.getName(), account);
+    public Collection<Account> getValues() {
+        return accounts.values();
     }
 
     @Override
-    public void delete(Account account) {
-        accounts.remove(account.getName());
+    public void put(String name, Account account) {
+        accounts.put(name, account);
+    }
+
+    @Override
+    public void remove(String name) {
+        accounts.remove(name);
     }
 
 }

@@ -4,6 +4,8 @@ import com.github.eokasta.commandlib.CommandManager;
 import com.github.eokasta.economy.commands.MoneyCommand;
 import com.github.eokasta.economy.listeners.PlayerListeners;
 import com.github.eokasta.economy.manager.EconomyManager;
+import com.github.eokasta.economy.singleton.SingletonMapper;
+import com.github.eokasta.economy.singleton.annotation.Singleton;
 import com.github.eokasta.economy.utils.YamlConfig;
 import com.github.eokasta.economy.utils.provider.Settings;
 import com.github.eokasta.economy.vault.EconomyImpl;
@@ -12,7 +14,6 @@ import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,8 +28,8 @@ public class EconomyPlugin extends JavaPlugin {
     public void onEnable() {
         InventoryListener.register(this);
 
-        this.settings = new Settings(new YamlConfig("config.yml", this, true));
-        this.economyManager = EconomyManager.getInstance();
+        this.settings = SingletonMapper.of(Settings.class, new YamlConfig("config.yml", this, true));
+        this.economyManager = SingletonMapper.of(EconomyManager.class, this);
 
         Bukkit.getServer().getServicesManager().register(
                 Economy.class,

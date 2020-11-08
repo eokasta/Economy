@@ -30,14 +30,16 @@ public class PlayerListeners implements Listener {
         final Player player = event.getPlayer();
 
         CompletableFuture.runAsync(() -> {
-            final Optional<Account> account = accountDao.get(player.getName());
+            final Optional<Account> optionalAccount = accountDao.get(player.getName());
 
-            if (account.isPresent())
-                accountCache.save(account.get());
+            if (optionalAccount.isPresent()) {
+                final Account account = optionalAccount.get();
+                accountCache.put(account.getName(), account);
+            }
 
             else {
-                final Account account1 = Account.builder().name(player.getName()).build();
-                accountCache.save(account1);
+                final Account account = Account.builder().name(player.getName()).build();
+                accountCache.put(account.getName(), account);
             }
         });
     }
@@ -48,7 +50,7 @@ public class PlayerListeners implements Listener {
 
         CompletableFuture.runAsync(() -> accountCache.get(player.getName()).ifPresent(account -> {
             accountDao.save(account);
-            accountCache.delete(account);
+            accountCache.remove(account.getName());
         }));
     }
 

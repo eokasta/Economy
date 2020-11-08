@@ -4,6 +4,7 @@ import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.cache.AccountCache;
 import com.github.eokasta.economy.dao.AccountDao;
 import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.annotation.Singleton;
 import com.github.eokasta.economy.storage.StorageManager;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.MakeItem;
@@ -12,29 +13,19 @@ import com.github.eokasta.economy.utils.provider.NumberFormatter;
 import dev.arantes.inventorymenulib.PaginatedGUIBuilder;
 import dev.arantes.inventorymenulib.buttons.ItemButton;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+@Singleton(id = "economyManager")
 public class EconomyManager {
-
-    private static EconomyManager instance;
-
-    public static EconomyManager getInstance() {
-        if (instance == null)
-            instance = new EconomyManager(JavaPlugin.getPlugin(EconomyPlugin.class));
-
-        return instance;
-    }
 
     @Getter
     private final EconomyPlugin plugin;
@@ -153,7 +144,7 @@ public class EconomyManager {
         plugin.getLogger().info("Saving accounts...");
         final long before = System.currentTimeMillis();
 
-        accountCache.getAll().forEach(account -> {
+        accountCache.getValues().forEach(account -> {
             if (!account.isModified())
                 return;
 
@@ -161,7 +152,7 @@ public class EconomyManager {
             account.setModified(false);
 
             if (Bukkit.getPlayerExact(account.getName()) == null)
-                accountCache.delete(account);
+                accountCache.remove(account.getName());
         });
 
         plugin.getLogger().info("Accounts saved in " + (System.currentTimeMillis() - before) + "ms.");
