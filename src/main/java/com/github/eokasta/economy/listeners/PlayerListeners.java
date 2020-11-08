@@ -3,7 +3,9 @@ package com.github.eokasta.economy.listeners;
 import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.dao.AccountDao;
 import com.github.eokasta.economy.cache.AccountCache;
+import com.github.eokasta.economy.manager.EconomyManager;
 import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +21,9 @@ public class PlayerListeners implements Listener {
     private final AccountCache accountCache;
 
     public PlayerListeners(EconomyPlugin plugin) {
-        this.accountDao = plugin.getEconomyManager().getAccountDao();
-        this.accountCache = plugin.getEconomyManager().getAccountCache();
+        final EconomyManager economyManager = SingletonMapper.of(EconomyManager.class);
+        this.accountDao = economyManager.getAccountDao();
+        this.accountCache = economyManager.getAccountCache();
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }

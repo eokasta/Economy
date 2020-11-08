@@ -12,22 +12,17 @@ import dev.arantes.inventorymenulib.listeners.InventoryListener;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class EconomyPlugin extends JavaPlugin {
 
-    @Getter
-    private Settings settings;
-    @Getter
     private EconomyManager economyManager;
 
     @Override
     public void onEnable() {
         InventoryListener.register(this);
 
-        this.settings = SingletonMapper.of(Settings.class, new YamlConfig("config.yml", this, true));
         this.economyManager = SingletonMapper.of(EconomyManager.class, this);
 
         Bukkit.getServer().getServicesManager().register(

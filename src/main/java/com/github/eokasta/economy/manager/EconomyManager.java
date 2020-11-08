@@ -4,12 +4,15 @@ import com.github.eokasta.economy.EconomyPlugin;
 import com.github.eokasta.economy.cache.AccountCache;
 import com.github.eokasta.economy.dao.AccountDao;
 import com.github.eokasta.economy.models.Account;
+import com.github.eokasta.economy.singleton.SingletonMapper;
 import com.github.eokasta.economy.singleton.annotation.Singleton;
 import com.github.eokasta.economy.storage.StorageManager;
 import com.github.eokasta.economy.utils.Helper;
 import com.github.eokasta.economy.utils.MakeItem;
 import com.github.eokasta.economy.utils.Replacer;
+import com.github.eokasta.economy.utils.YamlConfig;
 import com.github.eokasta.economy.utils.provider.NumberFormatter;
+import com.github.eokasta.economy.utils.provider.Settings;
 import dev.arantes.inventorymenulib.PaginatedGUIBuilder;
 import dev.arantes.inventorymenulib.buttons.ItemButton;
 import lombok.Getter;
@@ -29,6 +32,8 @@ public class EconomyManager {
 
     @Getter
     private final EconomyPlugin plugin;
+    private final Settings settings;
+    
     @Getter
     private final StorageManager storageManager;
     @Getter
@@ -53,11 +58,13 @@ public class EconomyManager {
     public EconomyManager(EconomyPlugin plugin) {
         this.plugin = plugin;
 
-        this.storageManager = new StorageManager(plugin.getSettings().getSQLSettings());
+        this.settings = SingletonMapper.of(Settings.class, new YamlConfig("config.yml", plugin, true));
+
+        this.storageManager = new StorageManager(settings.getSQLSettings());
         this.accountDao = new AccountDao(storageManager);
         this.accountCache = new AccountCache();
 
-        this.numberFormatter = new NumberFormatter(plugin.getSettings());
+        this.numberFormatter = new NumberFormatter(settings);
 
         initTasks();
     }
@@ -69,8 +76,8 @@ public class EconomyManager {
         if (updateTopTask != null)
             updateTopTask.cancel();
 
-        this.saveAllTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 10, 20 * plugin.getSettings().getSaveTaskDelay());
-        this.updateTopTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updateTop, 20, 20 * plugin.getSettings().getUpdateTopTaskDelay());
+        this.saveAllTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveAll, 10, 20 * settings.getSaveTaskDelay());
+        this.updateTopTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::updateTop, 20, 20 * settings.getUpdateTopTaskDelay());
     }
 
     @SneakyThrows
@@ -83,12 +90,12 @@ public class EconomyManager {
     }
 
     public void updateTop() {
-        this.topAccounts = accountDao.getAllOrder(plugin.getSettings().getTopSettings().getInt("limit", 5));
+        this.topAccounts = accountDao.getAllOrder(settings.getTopSettings().getInt("limit", 5));
 
         final Account topAccount = topAccounts[0];
 
         if (topAccount != null && (lastTop == null || !topAccount.getName().equals(lastTop.getName()))) {
-            plugin.getSettings().replaceOf(
+            settings.replaceOf(
                     "top-money-announcement",
                     new Replacer()
                             .add("%player%", topAccount.getName())
@@ -103,7 +110,7 @@ public class EconomyManager {
         if (topAccounts == null)
             return;
 
-        final ConfigurationSection section = plugin.getSettings().getTopSettings();
+        final ConfigurationSection section = settings.getTopSettings();
         if (section == null)
             return;
 
@@ -130,11 +137,11 @@ public class EconomyManager {
         replacer.add("%player%", account.getName());
         replacer.add("%coins%", numberFormatter.format(account.getCoins()));
 
-        final ConfigurationSection settings = plugin.getSettings().getTopSettings().getConfigurationSection("item");
+        final ConfigurationSection itemSettings = settings.getTopSettings().getConfigurationSection("item");
 
         final MakeItem makeItem = new MakeItem(account.getName());
-        makeItem.setName(replacer.replace(settings.getString("name")));
-        for (String line : settings.getStringList("lore"))
+        makeItem.setName(replacer.replace(itemSettings.getString("name")));
+        for (String line : itemSettings.getStringList("lore"))
             makeItem.addLore(replacer.replace(line));
 
         return makeItem.build();
